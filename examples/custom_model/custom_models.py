@@ -4,9 +4,9 @@ import numpy as np
 
 class DQN_UCB(DQN):
     def __init__(self, policy, env, learning_rate=1e-3, buffer_size=50000, learning_starts=1000, batch_size=32, ucb_c=1.5, *args, **kwargs):
-        super(DQN_UCB, self).__init__(policy, env, learning_rate, buffer_size, learning_starts, batch_size, *args, **kwargs)
         self.ucb_c = ucb_c  # Store ucb_c as an instance variable
         self.policy = UCBPolicy(env.observation_space, env.action_space, ucb_c=self.ucb_c)
+        super(DQN_UCB, self).__init__(policy, env, learning_rate, buffer_size, learning_starts, batch_size, *args, **kwargs)
 
     def _setup_model(self):
         super(DQN_UCB, self)._setup_model()
