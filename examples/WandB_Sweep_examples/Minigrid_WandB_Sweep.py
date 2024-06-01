@@ -1,4 +1,5 @@
-from utils import MinigridFeaturesExtractor, make_env, make_model
+from utils import make_env, make_model
+from models import MinigridFeaturesExtractor
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.monitor import Monitor
@@ -66,23 +67,25 @@ def train(config=None):
         video_length=200,
     )
 
-    model = make_model(config)(
-        config["policy_type"], 
-        env, 
-        policy_kwargs=policy_kwargs, 
-        verbose=1,
-        tensorboard_log=f"runs/{run.id}",
-        #device='mps',
-    )
+    model_class = make_model(config)
+    if model_class is not None:
+        model = model_class(
+            config["policy_type"], 
+            env, 
+            policy_kwargs=policy_kwargs, 
+            verbose=1,
+            tensorboard_log=f"runs/{run.id}",
+            #device='mps',
+        )
 
-    model.learn(
-        total_timesteps=config["total_timesteps"],
-        callback=WandbCallback(
-            model_save_path=f"models/{run.id}",
-            verbose=2,
-        ),
-        
-    )
+        model.learn(
+            total_timesteps=config["total_timesteps"],
+            callback=WandbCallback(
+                model_save_path=f"models/{run.id}",
+                verbose=2,
+            ),
+            
+        )
 
     run.finish()
 

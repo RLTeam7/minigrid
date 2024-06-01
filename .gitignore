@@ -25,3 +25,8 @@ _build/
 .env
 .venv
 venv
+
+# log data
+runs
+videos
+wandb
