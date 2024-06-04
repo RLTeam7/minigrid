@@ -29,17 +29,17 @@ parameters_dict = {
     "total_timesteps": {'value': 250000},
     "n_env": {'value': 1},
 
-    "seed" : {'value': 42},
+    "seed" : {'values': [42, 43, 44]},
     "agent-eps-decay": {'value': "const"}, #linear / log / const
-    "agent-eps": {'value': 1.0}, # start epsilon val
+    "agent-eps": {'value': 0.1}, # start epsilon val
     "max-skips": {'value': 7}, #max skip size
-    "uncertainty-factor": {"value": -1.5}, #for uncertainty-sensitive model
+    "uncertainty-factor": {"values": [-1.5, 1.5]}, #for uncertainty-sensitive model
 }
 
 sweep_config = {
     'method': 'grid',
     'metric': {
-        'name': 'avg_rew_per_ep',
+        'name': 'rollout/ep_rew_mean',
         'goal': 'maximize',
     },
     'parameters': parameters_dict,
@@ -61,7 +61,7 @@ def train(config=None):
     
     env = VecVideoRecorder(
         env,
-        f"videos/{run.id}",
+        f"videos/{run.id}_{config['env_id']}_{config['model_type']}",
         record_video_trigger=lambda x: x % ((config['total_timesteps']//config['n_env'])//5)== 0,
         video_length=200,
     )

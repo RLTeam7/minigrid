@@ -26,7 +26,7 @@ import gymnasium as gym
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 from stable_baselines3.common.vec_env.base_vec_env import VecEnv
 
-device = 'cpu'
+device = 'cuda'
 
 class MinigridFeaturesExtractor(BaseFeaturesExtractor):
     def __init__(self, observation_space: gym.Space, feature_dim: int = 512, normalized_image: bool = False) ->None:
@@ -101,7 +101,7 @@ def get_decay_schedule(start_val: float, decay_start: int, num_steps: int, type_
 
 
 class Q(nn.Module):
-    def __init__(self, observation_space, action_dim, feature_dim=128, non_linearity=F.relu, hidden_dim=50):
+    def __init__(self, observation_space, action_dim, feature_dim=128, non_linearity=F.relu, hidden_dim=64):
         super(Q, self).__init__()
         self._feature_extractor = MinigridFeaturesExtractor(observation_space=observation_space, feature_dim=feature_dim)
         self.fc1 = nn.Linear(feature_dim, hidden_dim)
@@ -116,7 +116,7 @@ class Q(nn.Module):
         return self.fc3(x)
 
 class BoostrappedDQN(nn.Module):
-    def __init__(self, observation_space, action_dim, nheads, feature_dim=128, hidden_dim=50):
+    def __init__(self, observation_space, action_dim, nheads, feature_dim=128, hidden_dim=64):
         super(BoostrappedDQN, self).__init__()
         self.nheads = nheads
         self._feature_extractor = MinigridFeaturesExtractor(observation_space=observation_space, feature_dim=feature_dim)
@@ -251,7 +251,7 @@ class UTE:
         """
         Simple helper to get action epsilon-greedy based on observation x
         """
-        u = np.argmax(self._q(tt(x)).detach().numpy(), axis=1)
+        u = np.argmax(self._q(tt(x)).detach().cpu().numpy(), axis=1)
         r = np.random.uniform()
         if r < epsilon:
             return np.random.randint(self._action_dim, size=1)
@@ -297,7 +297,8 @@ class UTE:
             steps, rewards, decisions = [], [], []
             while True:
                 #one_hot_s = np.eye(self._state_dim)[s]
-                epsilon_action = epsilon_schedule_action[total_timesteps]
+                if total_timesteps < max_timesteps:
+                    epsilon_action = epsilon_schedule_action[total_timesteps]
                 a = self.get_action(s, epsilon_action)         
                 #skip_state = np.hstack([one_hot_s, [a]])  # concatenate action to the state
                 skip = self.get_skip(s, a, 0)
@@ -400,7 +401,7 @@ class UTE:
                 {
                     'rollout/ep_rew_mean': np.mean([ep_info["r"] for ep_info in self.ep_info_buffer]),
                     'rollout/ep_len_mean': np.mean([ep_info["l"] for ep_info in self.ep_info_buffer]),
-                    'Charts/global_step' : total_timesteps,
+                    'global_step' : total_timesteps,
                 },
                 step=total_timesteps,
             )
