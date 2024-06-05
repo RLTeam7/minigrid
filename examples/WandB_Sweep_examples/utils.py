@@ -11,6 +11,7 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, VecVideoRecorder
 
 from models import UTE, MinigridFeaturesExtractor
+from ezDQN import ezDQN
 
 import wandb
 from wandb.integration.sb3 import WandbCallback
