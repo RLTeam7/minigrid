@@ -37,6 +37,8 @@ def make_model(config):
     #     return TDQN
     elif config['model_type'] == 'UTE':
         return UTE
+    elif config['model_type'] == ezDQN:
+        return ezDQN
     
     return None
 
