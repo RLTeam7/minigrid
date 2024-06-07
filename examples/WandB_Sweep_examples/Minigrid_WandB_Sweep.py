@@ -29,6 +29,7 @@ parameters_dict = {
             'A2C'
         ]
     },
+    "seed" :{'values': [42, 43, 44]},
     "policy_type": {'value': "CnnPolicy"},
     "total_timesteps": {'value': 250000},
     "n_env": {'value': 16},
@@ -69,14 +70,24 @@ def train(config=None):
 
     model_class = make_model(config)
     if model_class is not None:
-        model = model_class(
-            config["policy_type"], 
-            env, 
-            policy_kwargs=policy_kwargs, 
-            verbose=1,
-            tensorboard_log=f"runs/{run.id}",
-            #device='mps',
-        )
+        if config['model_type'] in ["PPO", "TRPO"]:
+            model = model_class(
+                config["policy_type"], 
+                env, 
+                policy_kwargs=policy_kwargs, 
+                verbose=1,
+                tensorboard_log=f"runs/{run.id}",
+                n_steps=128,
+            )
+        else:    
+            model = model_class(
+                config["policy_type"], 
+                env, 
+                policy_kwargs=policy_kwargs, 
+                verbose=1,
+                tensorboard_log=f"runs/{run.id}",
+                #device='mps',
+            )
 
         model.learn(
             total_timesteps=config["total_timesteps"],

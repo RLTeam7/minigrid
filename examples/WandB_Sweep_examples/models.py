@@ -400,7 +400,7 @@ class UTE:
                 {
                     'rollout/ep_rew_mean': np.mean([ep_info["r"] for ep_info in self.ep_info_buffer]),
                     'rollout/ep_len_mean': np.mean([ep_info["l"] for ep_info in self.ep_info_buffer]),
-                    'Charts/global_step' : total_timesteps,
+                    'global_step' : total_timesteps,
                 },
                 step=total_timesteps,
             )
