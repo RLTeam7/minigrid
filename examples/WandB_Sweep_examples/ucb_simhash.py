@@ -167,13 +167,13 @@ class UCB_simhash(DQN):
             th_obs = th.as_tensor(observation).to(self.device)
             feat = self.policy.extract_features(th_obs,self.policy.q_net.features_extractor)
             feat = feat.cpu()
-            state = simhash_tensor(feat, bins=100) # let's say we have 100 states
+            state = simhash_tensor(feat, bins=self.bins) # let's say we have 100 states
             self.n_count[state][action] += 1 
         else:
             th_obs = th.as_tensor(observation).to(self.device)
             feat = self.policy.extract_features(th_obs,self.policy.q_net.features_extractor)
             feat = feat.cpu()
-            state = simhash_tensor(feat, bins=100) # let's say we have 100 states
+            state = simhash_tensor(feat, bins=self.bins) # let's say we have 100 states
             
             with th.no_grad():
                 q_values = self.policy.q_net(th_obs)
