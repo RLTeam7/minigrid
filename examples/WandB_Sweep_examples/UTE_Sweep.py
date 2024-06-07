@@ -12,6 +12,8 @@ import wandb
 from functools import partial
 import numpy as np
 
+from ucb_simhash import UCB_simhash
+
 parameters_dict = {
     'env_id': {
         'values': [

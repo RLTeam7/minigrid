@@ -12,6 +12,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv, VecVideoRecorder
 
 from models import UTE, MinigridFeaturesExtractor
 from ezDQN import ezDQN
+from ucb_simhash import UCB_simhash
 
 import wandb
 from wandb.integration.sb3 import WandbCallback
@@ -38,8 +39,10 @@ def make_model(config):
     #     return TDQN
     elif config['model_type'] == 'UTE':
         return UTE
-    elif config['model_type'] == ezDQN:
+    elif config['model_type'] == 'ezDQN':
         return ezDQN
+    elif config['model_type'] == "UCB_simhash":
+        return UCB_simhash
     
     return None
 
