@@ -30,4 +30,8 @@ venv
 runs
 videos
 wandb
-models
+examples/WandB_Sweep_examples/models
+examples/WandB_Sweep_examples/best_models
+examples/WandB_Sweep_examples/eval_videos
+examples/WandB_Sweep_examples/logs
+

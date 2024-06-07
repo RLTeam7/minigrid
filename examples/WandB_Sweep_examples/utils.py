@@ -5,12 +5,16 @@ import gymnasium as gym
 from minigrid.wrappers import ImgObsWrapper
 
 from stable_baselines3 import PPO, DQN, A2C
+from UCB0.ddqn import DQN as UCB
 from sb3_contrib import TRPO
+
 from stable_baselines3.common.vec_env.base_vec_env import VecEnv
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, VecVideoRecorder
 
 from models import UTE, MinigridFeaturesExtractor
+from ezDQN import ezDQN
+from ucb_simhash import UCB_simhash
 
 import wandb
 from wandb.integration.sb3 import WandbCallback
@@ -37,6 +41,12 @@ def make_model(config):
     #     return TDQN
     elif config['model_type'] == 'UTE':
         return UTE
+    elif config['model_type'] == 'ezDQN':
+        return ezDQN
+    elif config['model_type'] == "UCB_simhash":
+        return UCB_simhash
+    elif config['model_type'] == "UCB":
+        return UCB
     
     return None
 
